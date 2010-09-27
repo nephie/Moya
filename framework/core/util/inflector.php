@@ -1,4 +1,6 @@
 <?php
+namespace Moya\core\util;
+
 class inflector {
 	
 	public static function getBasetypefromcontext($subject){
@@ -19,7 +21,7 @@ class inflector {
 		$plugin = '';
 		
 		if(is_object($subject)){
-			$rc = new ReflectionClass($subject);
+			$rc = new \ReflectionClass($subject);
 			$path = $rc->getFileName();
 			$dirpieces = explode('/',$path);
 			
@@ -45,6 +47,8 @@ class inflector {
 		
 		if(is_object($subject)){
 			$specific = get_class($subject);
+			$pieces = explode('\\',$specific);
+			$specific = array_pop($pieces);
 		}
 		else {
 			@list($null,$specific) = explode('/',$subject);

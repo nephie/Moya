@@ -1,13 +1,12 @@
 <?php
+namespace Moya;
+use \Moya\plugins\test\model as test;
 
 require_once 'defines.php';
+include FRAMEWORK . DS . 'core' . DS . 'util' . DS . 'autoloader.php';
+spl_autoload_register('\\Moya\\core\\util\\autoloader');
 
-require_once FRAMEWORK . DS . 'lib' . DS .'orm' . DS .'lib' . DS . 'model.php';
-require_once FRAMEWORK . DS . 'plugins' . DS .'test' . DS .'model' . DS . 'userModel.php';
-require_once FRAMEWORK . DS . 'lib' . DS . 'inflector' . DS . 'inflector.php';
-require_once FRAMEWORK . DS . 'lib' . DS . 'config' . DS . 'config.php';
-
-$userModel = new userModel();
+$userModel = new test\userModel();
 
 echo $userModel->getDriver();
 

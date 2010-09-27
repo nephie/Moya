@@ -1,6 +1,6 @@
 <?php
 	
 	define('DS', '/');
-	define('FRAMEWORK', '..' . DS . 'framework');
+	define('FRAMEWORK', DS . 'var' . DS . 'www' . DS . 'orm' . DS . 'framework');
 	
 ?>
