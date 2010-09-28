@@ -48,14 +48,6 @@ class config {
 			}
 		}
 		
-		if(!isset($config)){
-			echo '<pre>';
-			echo $basetype . "\n";
-			echo $plugin . "\n";
-			echo $specific . "\n";
-			print_r( $context);
-		}
-		
 		$fieldpieces = explode('/', $field);
 		if(count($fieldpieces) == 1){
 			return $config[$field];

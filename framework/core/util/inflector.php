@@ -23,7 +23,7 @@ class inflector {
 		if(is_object($subject)){
 			$rc = new \ReflectionClass($subject);
 			$path = $rc->getFileName();
-			$dirpieces = explode('/',$path);
+			$dirpieces = explode(DS,$path);
 			
 			for($i = 0; $i < count($dirpieces); $i++){
 				if($dirpieces[$i] == 'plugins'){

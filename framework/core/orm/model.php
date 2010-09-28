@@ -9,6 +9,7 @@ class model {
 	public function __construct(){
 		
 		$datastore = util\config::get($this, 'datastore');
+		
 		if($datastore != ''){
 			$this->datastore = $datastore;
 		}
