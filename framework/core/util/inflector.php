@@ -44,13 +44,13 @@ class inflector {
 		$plugin = '';
 		
 		if(is_object($context)){
-			$rc = new \ReflectionClass($context);
-			$path = $rc->getFileName();
-			$dirpieces = explode(DS,$path);
+			$class = get_class($context);
 			
-			for($i = 0; $i < count($dirpieces); $i++){
-				if($dirpieces[$i] == 'plugins'){
-					$plugin = $dirpieces[$i +1];
+			$pieces = explode('\\',$class);
+			
+			for($i = 0; $i < count($pieces); $i++){
+				if($pieces[$i] == 'plugins'){
+					$plugin = $pieces[$i +1];
 					break;
 				}
 			}
