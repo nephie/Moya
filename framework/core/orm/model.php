@@ -30,12 +30,4 @@ class model {
 		
 		$this->driver = new $driverclass();
 	}
-	
-	/**
-	 * 
-	 * @TODO Delete me when testing is over
-	 */
-	public function getDriver(){
-		return $this->driver->getType();
-	}
 }

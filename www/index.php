@@ -1,14 +1,16 @@
 <?php
 namespace Moya;
-use \Moya\plugins\test\model as test;
 
-require_once 'defines.php';
-include FRAMEWORK . DS . 'core' . DS . 'util' . DS . 'autoloader.php';
-spl_autoload_register('\\Moya\\core\\util\\autoloader');
+//	Set up the base environment
+include 'defines.php';
 
-$userModel = new test\userModel();
+//	Get the base class loaded in
+include FRAMEWORK . DS . 'moya.php';
 
-echo $userModel->getDriver();
+//	Load up that base class
+$moya = new Moya();
 
+//	And start it up
+$moya->run();
 
 ?>
