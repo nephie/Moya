@@ -1,7 +1,27 @@
 <?php
 namespace Moya\core\util;
 
+/**
+ * 
+ * Config util class. Provides a static method for reading config values.
+ * @author tim.dhooge
+ *
+ */
 class config {
+	
+	/**
+	 * 
+	 * Get a configuration value for a given context
+	 * 
+	 * The context can either be a string with format [<plugin>/]specificPart (where Part is the basetype like 'model') or an object,in which 
+	 * case the namespace will provide the information
+	 * 
+	 * The field is what configuration field you desire. Nested configuration values can be requested by the base value, which will return an array
+	 * or specific with the following format: 'base/sub/subsub'
+	 *   
+	 * @param mixed $context
+	 * @param string $field
+	 */
 	public static function get($context, $field){
 		$basetype = inflector::getBasetypefromcontext($context);
 		$specific = inflector::getSpecificfromcontext($context);

@@ -2,10 +2,22 @@
 namespace Moya\core\orm;
 use \Moya\core\util as util;
 
+/**
+ * 
+ * Base class for all models that use this ORM to extend.
+ * @author tim.dhooge
+ *
+ */
 class model {
 	protected $driver;
 	protected $datastore = 'default';
 	
+	/**
+	 * 
+	 * Constructor. This will figure out which datastore the model uses (from config or default) and load the driver for that datastore.
+	 *
+	 * @TODO actually connect and stuff? 
+	 */
 	public function __construct(){
 		
 		$datastore = util\config::get($this, 'datastore');
@@ -19,6 +31,10 @@ class model {
 		$this->driver = new $driverclass();
 	}
 	
+	/**
+	 * 
+	 * @TODO Delete me when testing is over
+	 */
 	public function getDriver(){
 		return $this->driver->getType();
 	}

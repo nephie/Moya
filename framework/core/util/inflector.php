@@ -1,15 +1,29 @@
 <?php
 namespace Moya\core\util;
 
+/**
+ * 
+ * Utility class to break down contexts and stuff
+ * @author tim.dhooge
+ *
+ */
 class inflector {
 	
-	public static function getBasetypefromcontext($subject){
-		if(is_object($subject)){
-			$subject = get_class($subject);
+	/**
+	 * 
+	 * Get the basetype for a context.
+	 * Context can either be a string or an object. The base type is the camelcased endpart (eg model in userModel)
+	 * 
+	 * @param mixed $context
+	 * @return string
+	 */
+	public static function getBasetypefromcontext($context){
+		if(is_object($context)){
+			$context = get_class($context);
 		}
 		
-		$subject = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $subject));		
-		@list($null,$basetype) = explode('_', $subject);
+		$context = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $context));		
+		@list($null,$basetype) = explode('_', $context);
 		if($basetype == ''){
 			$basetype = $null;
 		}
@@ -17,11 +31,20 @@ class inflector {
 		return $basetype;
 	}
 	
-	public static function getPluginfromcontext($subject){
+	/**
+	 * 
+	 * Get the plugin for a context.
+	 * Context can either be a string or an object. the plugin is the part before a '/' for a string, or the part after \plugins\ in the namespace
+	 * for an object.
+	 * 
+	 * @param mixed $context
+	 * @return string
+	 */
+	public static function getPluginfromcontext($context){
 		$plugin = '';
 		
-		if(is_object($subject)){
-			$rc = new \ReflectionClass($subject);
+		if(is_object($context)){
+			$rc = new \ReflectionClass($context);
 			$path = $rc->getFileName();
 			$dirpieces = explode(DS,$path);
 			
@@ -33,7 +56,7 @@ class inflector {
 			}
 		}
 		else {
-			@list($plugin,$null) = explode('/',$subject);
+			@list($plugin,$null) = explode('/',$context);
 			if ($null == ''){
 				$plugin = $null;
 			}
@@ -42,16 +65,25 @@ class inflector {
 		return $plugin;
 	}
 	
-	public static function getSpecificfromcontext($subject){
+	/**
+	 * 
+	 * Get the specific part of a context.
+	 * Context can either be a string or an object. the specific part is the part after the '/' in a string, or the last part of the namespace for
+	 * an object.
+	 * 
+	 * @param mixed $context
+	 * @return string
+	 */
+	public static function getSpecificfromcontext($context){
 		$specific = '';
 		
-		if(is_object($subject)){
-			$specific = get_class($subject);
+		if(is_object($context)){
+			$specific = get_class($context);
 			$pieces = explode('\\',$specific);
 			$specific = array_pop($pieces);
 		}
 		else {
-			@list($null,$specific) = explode('/',$subject);
+			@list($null,$specific) = explode('/',$context);
 			if ($specific == ''){
 				$specific = $null;
 			}
