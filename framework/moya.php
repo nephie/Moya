@@ -24,7 +24,9 @@ class Moya {
 	 * Fire up the framework and work out the request
 	 */
 	public function run(){
-		
+		echo '<pre>';
+		$test = new \Moya\plugins\test\model\pageModel();
+		echo '</pre>';
 	}
 }
 

@@ -7,6 +7,13 @@ namespace Moya\core\orm\lib;
  * @author tim.dhooge
  *
  */
-class driver {
+abstract class driver {
+	
+	static protected $instance;
+	
+	protected function __construct($datastore){}
+	protected function __clone(){}
+
+	abstract public function getInstance($datastore);
 	
 }

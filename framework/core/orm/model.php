@@ -28,6 +28,10 @@ class model {
 		
 		$driverclass = __NAMESPACE__ . '\\drivers\\' . util\config::get('datastore', $this->datastore . '/driver') . 'Driver';
 		
-		$this->driver = new $driverclass();
+		$this->driver = $driverclass::getInstance($datastore);
+	}
+	
+	public function get(){
+		
 	}
 }

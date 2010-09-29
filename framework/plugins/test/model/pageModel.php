@@ -1,6 +1,6 @@
 <?php
 namespace Moya\plugins\test\model;
-use Moya\core\orm as orm;
+use Moya\core\orm\model;
 
 /**
  * 
@@ -8,7 +8,7 @@ use Moya\core\orm as orm;
  * @author tim.dhooge
  *
  */
-class userModel extends orm\model {
+class pageModel extends model {
 	
 }
 ?>
