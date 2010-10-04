@@ -25,7 +25,12 @@ class Moya {
 	 */
 	public function run(){
 		echo '<pre>';
-		$test = new \Moya\plugins\test\model\pageModel();
+		$pagemodel = new \Moya\plugins\test\model\pageModel();
+		
+		$page = $pagemodel->get()
+					->where('id','=','1')
+					->execute();
+		
 		echo '</pre>';
 	}
 }

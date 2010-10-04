@@ -9,6 +9,11 @@ use Moya\core\orm\model;
  *
  */
 class pageModel extends model {
+	protected $dbfields = array('name','longtitle');
+	protected $mapping = array('longtitle' => 'title');
 	
+	protected $constraints = array(
+		'name' => array('required', 'unique')
+	);
 }
 ?>

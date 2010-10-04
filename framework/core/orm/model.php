@@ -1,5 +1,6 @@
 <?php
 namespace Moya\core\orm;
+use Moya\core\orm\lib\querybuilder;
 use \Moya\core\util as util;
 
 /**
@@ -11,6 +12,15 @@ use \Moya\core\util as util;
 class model {
 	protected $driver;
 	protected $datastore = 'default';
+	
+	protected $idfield = 'id';
+	protected $dbfields = array();
+	protected $mapping = array();
+	
+	protected $constraints = array();
+	
+	protected $behaviours = array();
+	protected $associations = array();
 	
 	/**
 	 * 
@@ -31,7 +41,15 @@ class model {
 		$this->driver = $driverclass::getInstance($datastore);
 	}
 	
-	public function get(){
-		
+	
+	/**
+	 * 
+	 * Magic function for the select, delete functions
+	 */
+	public function __call($method, $arguments){
+		switch($method){
+			case 'get': return new querybuilder($this,'get');
+				break;
+		}
 	}
 }

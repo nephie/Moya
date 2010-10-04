@@ -9,8 +9,8 @@ namespace Moya\core\orm\drivers;
  */
 class mysqlDriver extends pdoDriver {
 	public function getInstance($datastore){
-		if(! self::$instance[$datastore] instanceof mssqlDriver){
-			self::$instance[$datastore] = new mssqlDriver($datastore); 
+		if(! self::$instance[$datastore] instanceof mysqlDriver){
+			self::$instance[$datastore] = new mysqlDriver($datastore); 
 		}
 		
 		return self::$instance[$datastore];
