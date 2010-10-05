@@ -1,6 +1,5 @@
 <?php
 namespace Moya\core\orm;
-use Moya\core\orm\lib\querybuilder;
 use \Moya\core\util as util;
 
 /**
@@ -13,9 +12,10 @@ class model {
 	protected $driver;
 	protected $datastore = 'default';
 	
-	protected $idfield = 'id';
+	protected $idfield = array('id' => array(
+										'type' => 'INT'
+									));
 	protected $dbfields = array();
-	protected $mapping = array();
 	
 	protected $constraints = array();
 	
@@ -26,7 +26,6 @@ class model {
 	 * 
 	 * Constructor. This will figure out which datastore the model uses (from config or default) and load the driver for that datastore.
 	 *
-	 * @TODO actually connect and stuff? 
 	 */
 	public function __construct(){
 		
@@ -39,17 +38,5 @@ class model {
 		$driverclass = __NAMESPACE__ . '\\drivers\\' . util\config::get('datastore', $this->datastore . '/driver') . 'Driver';
 		
 		$this->driver = $driverclass::getInstance($datastore);
-	}
-	
-	
-	/**
-	 * 
-	 * Magic function for the select, delete functions
-	 */
-	public function __call($method, $arguments){
-		switch($method){
-			case 'get': return new querybuilder($this,'get');
-				break;
-		}
 	}
 }

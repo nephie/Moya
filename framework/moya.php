@@ -8,6 +8,8 @@ namespace Moya;
  * @author tim.dhooge
  *
  */
+use Moya\core\orm\orm;
+
 class Moya {
 	
 	/**
@@ -16,7 +18,7 @@ class Moya {
 	 */
 	public function __construct(){
 		include FRAMEWORK . DS . 'core' . DS . 'util' . DS . 'autoloader.php';
-		spl_autoload_register('\\Moya\\core\\util\\autoloader');
+		spl_autoload_register('\Moya\core\util\autoloader');
 	}
 	
 	/**
@@ -25,12 +27,21 @@ class Moya {
 	 */
 	public function run(){
 		echo '<pre>';
-		$pagemodel = new \Moya\plugins\test\model\pageModel();
 		
-		$page = $pagemodel->get()
-					->where('id','=','1')
-					->execute();
+		$statement = orm::prepare('SELECT test\pageObject WHERE [id] = :id');
 		
+		$statement->setParameter(':id',1);
+		$pages = $statement->fetch();
+		if(count($pages) == 1){
+			$page1 = $page[0];
+		}
+		
+		$statement->setParameter(':id',2);
+		$page2 = $statement->fetchOne();
+		
+		$title = '%tes%';
+		$pages = orm::fetch('SELECT test\pageObject WHERE [title] LIKE :1 ',$title);
+					
 		echo '</pre>';
 	}
 }
