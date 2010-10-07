@@ -1,5 +1,5 @@
 <?php
-namespace Moya\core\orm;
+namespace Moya\core\orm\lib;
 use \Moya\core\util as util;
 
 /**

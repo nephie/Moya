@@ -12,7 +12,8 @@ class inflector {
 	/**
 	 * 
 	 * Get the basetype for a context.
-	 * Context can either be a string or an object. The base type is the camelcased endpart (eg model in userModel)
+	 * Context can either be a string or an object. If it is a string, it can not be the short <plugin>\<specific> version but it must be
+	 * the FQDN! 
 	 * 
 	 * @param mixed $context
 	 * @return string
@@ -22,10 +23,14 @@ class inflector {
 			$context = get_class($context);
 		}
 		
-		$context = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $context));		
-		@list($null,$basetype) = explode('_', $context);
-		if($basetype == ''){
-			$basetype = $null;
+			
+		$pieces = explode('\\',$context);
+		
+		for($i = 0; $i < count($pieces); $i++){
+			if($pieces[$i] == 'plugins'){
+				$basetype = $pieces[$i + 2];
+				break;
+			}
 		}
 		
 		return $basetype;
@@ -34,7 +39,7 @@ class inflector {
 	/**
 	 * 
 	 * Get the plugin for a context.
-	 * Context can either be a string or an object. the plugin is the part before a '/' for a string, or the part after \plugins\ in the namespace
+	 * Context can either be a string or an object. the plugin is the part before a '\' for a string, or the part after \plugins\ in the namespace
 	 * for an object.
 	 * 
 	 * @param mixed $context
@@ -56,10 +61,19 @@ class inflector {
 			}
 		}
 		else {
-			@list($plugin,$null) = explode('/',$context);
-			if ($null == ''){
-				$plugin = $null;
+			$pieces = explode('\\',$context);
+			if(count($pieces) == 2){
+				$plugin = $pieces[0];
 			}
+			elseif (count($pieces) > 2){
+				for($i = 0; $i < count($pieces); $i++){
+					if($pieces[$i] == 'plugins'){
+						$plugin = $pieces[$i +1];
+						break;
+					}
+				}
+			}
+			
 		}
 		
 		return $plugin;
@@ -68,7 +82,7 @@ class inflector {
 	/**
 	 * 
 	 * Get the specific part of a context.
-	 * Context can either be a string or an object. the specific part is the part after the '/' in a string, or the last part of the namespace for
+	 * Context can either be a string or an object. the specific part is the part after the '\' in a string, or the last part of the namespace for
 	 * an object.
 	 * 
 	 * @param mixed $context
@@ -83,13 +97,55 @@ class inflector {
 			$specific = array_pop($pieces);
 		}
 		else {
-			@list($null,$specific) = explode('/',$context);
+			@list($null,$specific) = explode('\\',$context);
 			if ($specific == ''){
 				$specific = $null;
 			}
 		}
 		
 		return $specific;
+	}
+
+	public static function getModelfromcontext($context){
+		$basetype = inflector::getBasetypefromcontext($context);
+		
+		if(is_object($context) && $basetype == 'model'){
+			$object = get_class($context);
+		}
+		else {	
+			$plugin = inflector::getPluginfromcontext($context);
+			$specific = inflector::getSpecificfromcontext($context);
+					
+			if($plugin == 'core'){
+				$model = '\Moya\core\model\\' . $specific;
+			}
+			else {
+				$model = '\Moya\plugins\\' . $plugin . '\model\\' . $specific;
+			}
+			
+			return $model;
+		}		
+	}
+	
+	public static function getObjectfromcontext($context){
+		$basetype = inflector::getBasetypefromcontext($context);
+		
+		if(is_object($context) && $basetype == 'object'){
+			$object = get_class($context);
+		}
+		else {		
+			$plugin = inflector::getPluginfromcontext($context);
+			$specific = inflector::getSpecificfromcontext($context);
+								
+			if($plugin == 'core'){
+				$object = '\Moya\core\object\\' . $specific;
+			}
+			else {
+				$object = '\Moya\plugins\\' . $plugin . '\object\\' . $specific;
+			}
+		}
+		
+		return $object;
 	}
 }
 ?>

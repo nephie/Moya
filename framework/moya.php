@@ -1,5 +1,7 @@
 <?php
 namespace Moya;
+use Moya\plugins\test\object\pageObject;
+use Moya\core\orm\orm;
 
 /**
  * 
@@ -8,8 +10,6 @@ namespace Moya;
  * @author tim.dhooge
  *
  */
-use Moya\core\orm\orm;
-
 class Moya {
 	
 	/**
@@ -19,6 +19,9 @@ class Moya {
 	public function __construct(){
 		include FRAMEWORK . DS . 'core' . DS . 'util' . DS . 'autoloader.php';
 		spl_autoload_register('\Moya\core\util\autoloader');
+		
+		include FRAMEWORK . DS . 'core' . DS . 'util' . DS . 'errortoexception.php';
+		set_error_handler('\Moya\core\util\errortoexception' , E_ALL);
 	}
 	
 	/**
@@ -28,19 +31,21 @@ class Moya {
 	public function run(){
 		echo '<pre>';
 		
-		$statement = orm::prepare('SELECT test\pageObject WHERE [id] = :id');
+		//$statement = orm::prepare('SELECT test\page WHERE ( [test\page.id] = :id OR [name] LIKE :name) AND [title] LIKE :title');
+		
+		$statement = orm::prepare('SELECT test\page WHERE [title] LIKE {:1}');
 		
 		$statement->setParameter(':id',1);
+		$statement->setParameter(':name','%tes%');
+		$statement->setParameter(':title','%tes%');
 		$pages = $statement->fetch();
-		if(count($pages) == 1){
-			$page1 = $page[0];
-		}
+		
 		
 		$statement->setParameter(':id',2);
 		$page2 = $statement->fetchOne();
 		
 		$title = '%tes%';
-		$pages = orm::fetch('SELECT test\pageObject WHERE [title] LIKE :1 ',$title);
+		$pages = orm::fetch('SELECT test\page WHERE [title] LIKE :1 ',$title);
 					
 		echo '</pre>';
 	}

@@ -8,7 +8,7 @@ use Moya\core\orm\lib\model;
  * @author tim.dhooge
  *
  */
-class pageModel extends model {
+class page extends model {
 									
 	protected $dbfields = array(
 							'name' => array(

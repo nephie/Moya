@@ -32,7 +32,9 @@ class getandsetLib {
         list( $action , $variable) = explode('_' , $function , 2 );
 
         //  Make sure the variable exists
-        $this->reflectionClass = new ReflectionClass($this);
+        if(!$this->reflectionClass instanceof \ReflectionClass){
+        	$this->reflectionClass = new \ReflectionClass($this);
+        }
         if( $this->reflectionClass->hasProperty($variable)){
             //  Is it a valid action?
             switch ($action) {
@@ -45,11 +47,11 @@ class getandsetLib {
                     break;
                 case 'remove': return $this->_remove($variable , $arguments[0]);
                     break;
-                default: throw new Exception("Method $method does not exist\n");
+                default: throw new \Exception("Method $method does not exist\n");
             }
         }
         else {
-            throw new Exception("Method $method does not exist\n");
+            throw new \Exception("Method $method does not exist\n");
         }
 	}
 
