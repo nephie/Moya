@@ -10,12 +10,12 @@ use Moya\core\orm\lib\model;
  */
 class page extends model {
 									
-	protected $dbfields = array(
+	protected $fields = array(
 							'name' => array(
 										'type' => 'STRING',
 										'constraints' => array('required','unique','maxlength:100')
 									),
-							'longtitle' => array(
+							'title' => array(
 										'type' => 'TEXT'
 									)
 	);

@@ -8,8 +8,9 @@ class select {
 	public function parse(lexer $lexer){
 		
 		$lexer->query->setType('SELECT');
-		$lexer->query->setObject(inflector::getObjectfromcontext($lexer->getCurrentToken()));
-		$lexer->query->setModel(inflector::getModelfromcontext($lexer->getCurrentToken()));
+				
+		$model = inflector::getModelfromcontext($lexer->getCurrentToken());
+		$lexer->query->setModel(new $model());
 		$lexer->moveNext();
 	}
 }

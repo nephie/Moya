@@ -1,6 +1,10 @@
 <?php
 namespace Moya\core\orm\lib;
-use \Moya\core\util as util;
+
+use Moya\core\util\inflector;
+
+use Moya\core\lib\getandsetLib;
+use \Moya\core\util\config;
 
 /**
  * 
@@ -8,35 +12,102 @@ use \Moya\core\util as util;
  * @author tim.dhooge
  *
  */
-class model {
-	protected $driver;
+class model extends getandsetLib {
 	protected $datastore = 'default';
 	
 	protected $idfield = array('id' => array(
 										'type' => 'INT'
 									));
-	protected $dbfields = array();
-	
-	protected $constraints = array();
-	
+	protected $fields = array();
+	protected $mapDbToObject = array();
 	protected $behaviours = array();
 	protected $associations = array();
 	
+	protected $table;
+	
 	/**
 	 * 
-	 * Constructor. This will figure out which datastore the model uses (from config or default) and load the driver for that datastore.
+	 * Constructor. This will figure out which datastore the model uses (from config or default).
 	 *
 	 */
 	public function __construct(){
 		
-		$datastore = util\config::get($this, 'datastore');
+		$datastore = config::get($this, 'datastore');
 		
 		if($datastore != ''){
 			$this->datastore = $datastore;
 		}
 		
-		$driverclass = __NAMESPACE__ . '\\drivers\\' . util\config::get('datastore', $this->datastore . '/driver') . 'Driver';
+		$map = config::get($this, 'mapDbToObject');
+		if(is_array($map)){
+			$this->mapDbToObject = $map;
+		}
 		
-		$this->driver = $driverclass::getInstance($datastore);
+		if($this->table == ''){
+			$this->table = inflector::getSpecificfromcontext($this);
+		}
 	}
+	
+	public function getDbfieldfor($field){
+		$flipmap = array_flip($this->mapDbToObject);
+				
+		if(isset($flipmap[$field])){
+			return $flipmap[$field];
+		}
+		else {
+			return $field;
+		}
+	}
+	
+	public function getObjectfieldfor($field){
+		if(isset($this->mapDbToObject[$field])){
+			return $this->mapDbToObject[$field];
+		}
+		else {
+			return $field;
+		}
+	}
+	
+	public function getDbfields(){
+		$output = array();
+
+		foreach($this->idfield as $field => $conf){
+			$output[$this->getDbfieldfor($field)] = $conf;
+		}
+		
+		foreach($this->fields as $field => $conf){
+			$output[$this->getDbfieldfor($field)] = $conf;
+		}
+		
+		return $output;
+	}
+	
+	public function getObjects($data){
+		$objects = array();
+		
+		foreach($data as $row){
+			$objects[] = $this->fillObject($row);
+		}
+		
+		return $objects;
+	}
+	
+	/**
+     * This function will return a object filled with the data contained in the array given as parameter
+     *
+     */
+	protected  function fillObject($data){
+		$objecttype = inflector::getObjectfromcontext($this);
+		$object = new $objecttype();
+
+		foreach($data as $field => $value){
+			$objectfield = $this->getObjectfieldfor($field);
+			
+			$func = 'set' . ucfirst($objectfield);
+			$object->$func($value);
+		}
+		
+		return $object;
+	}
+	
 }

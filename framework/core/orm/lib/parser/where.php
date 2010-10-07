@@ -1,6 +1,8 @@
 <?php
 namespace Moya\core\orm\lib\parser;
 
+use Moya\core\util\inflector;
+
 use Moya\core\orm\lib\lexer;
 
 class where {
@@ -55,7 +57,8 @@ class where {
 		$lexer->moveNext();
 		$object = '';
 		if($lexer->isNextToken('.')){
-			$object = $lexer->getCurrentToken();
+			$modelclass = inflector::getModelfromcontext($lexer->getCurrentToken());
+			$model = new $modelclass;
 			$lexer->moveNext();
 			$lexer->moveNext();
 		}

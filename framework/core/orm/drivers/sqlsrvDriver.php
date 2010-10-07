@@ -7,7 +7,12 @@ namespace Moya\core\orm\drivers;
  * @author tim.dhooge
  *
  */
+use Moya\core\util\config;
+
 class sqlsrvDriver extends pdoDriver {
+	
+	protected $leftcolident = '[';
+	protected $rightcolident = ']';
 	
 	public function getInstance($datastore){
 		if(! self::$instance[$datastore] instanceof sqlsrvDriver){
@@ -15,6 +20,12 @@ class sqlsrvDriver extends pdoDriver {
 		}
 		
 		return self::$instance[$datastore];
+	}
+	
+	protected function __construct($datastore){
+		$config = config::get('datastore',$datastore);
+		
+		$this->pdo = new \PDO($config['driver'] . ':Server=' . $config['host'] . ' ; Database=' . $config['database'],$config['username'],$config['password']);	
 	}
 }
 ?>

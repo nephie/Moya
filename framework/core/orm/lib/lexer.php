@@ -20,15 +20,12 @@ class lexer {
     
     public function parse($input){
     	$this->input = $input;
-    	$this->tokens = $this->tokenize($input);
-    	
-print_r($this->tokens);
-    	
+    	$this->tokens = $this->tokenize($input);    	
     	$this->query = new query();
     	
     	$this->walkTokens();
-    	
-    	
+
+    	return $this->query;
     }
     
     protected function walkTokens(){
@@ -45,8 +42,6 @@ print_r($this->tokens);
 	    	$this->moveNext();
 	    	
 	    	$identParser->parse($this);
-	    	
-	    	print_r($this->query);
     	}
     	
     }
