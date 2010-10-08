@@ -31,13 +31,24 @@ class Moya {
 	public function run(){
 		echo '<pre>';
 		
-		$statement = orm::query('SELECT test\page WHERE [id] = {1}')->prepare();
+		$statement = orm::query('SELECT test\page WHERE [id] = {:id}');
 		
-		$statement->setParameter(':id', 1);
+		$statement->setParameter(':id', 1);	
+		$statement->execute();	
+		$pages = $statement->fetchAll();
+		print_r($pages);
 		
+		$statement->setParameter(':id', 2)->execute();
 		$pages = $statement->fetch();
 		print_r($pages);
-		//print_r($statement);
+		
+		$stm = orm::query('SELECT test\page WHERE [id] = {:id}');
+		$page = $stm->execute(array(':id' => '1'))->fetch();
+		print_r($page);
+		
+		$pages = $stm->execute(array(':id' => '1'))->fetchAll();
+		print_r($pages);
+		
 		/*
 		//$statement = orm::prepare('SELECT test\page WHERE ( [test\page.id] = :id OR [name] LIKE :name) AND [title] LIKE :title');
 		$statement->setParameter(':id',1);

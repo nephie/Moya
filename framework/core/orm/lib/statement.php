@@ -21,13 +21,27 @@ class statement extends getandsetLib {
 		return $this;
 	}
 	
-	public function fetch(){
-		$data = $this->driver->fetch($this->driverstatement);
+	public function execute($params = array()){
+		$this->driver->execute($this->driverstatement,$params);
+		return $this;
+	}
+	
+	public function fetchAll(){
+		$data = $this->driver->fetchAll($this->driverstatement);
 		
 		$model = $this->query->getModel();
 		$objects = $model->getObjects($data);
 		
 		return $objects;
+	}
+	
+	public function fetch(){
+		$data = $this->driver->fetch($this->driverstatement);
+		
+		$model = $this->query->getModel();
+		$object = $model->fillObject($data);
+		
+		return $object;
 	}
 	
 	public function fetchOne(){

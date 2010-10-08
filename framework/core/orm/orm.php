@@ -11,7 +11,9 @@ class orm {
 	protected static $cachedStatements;
 	
 	public static function query($query){
-		if(!self::$cachedStatements[$query] instanceof statement){
+		$shortq = preg_replace('/\s*/m', '', $query);
+		
+		if(!self::$cachedStatements[$shortq] instanceof statement){
 			$lexer = new lexer();		
 			$parsedQuery = $lexer->parse($query);
 			
@@ -19,17 +21,19 @@ class orm {
 			$statement->setQuery($parsedQuery);
 			
 			$datastore = $parsedQuery->getModel()->getDatastore();
-			$driverclass = __NAMESPACE__ . '\\drivers\\' . config::get('datastore', $datastore . '/driver') . 'Driver';	
+			$driverclass = __NAMESPACE__ . '\\drivers\\' . config::get('datastore', $datastore . '/driver');	
 
 			$driver = $driverclass::getInstance($datastore);
 			$statement->setDriver($driver);
 			
 			$statement->setCompiledquery($driver->compileQuery($parsedQuery));
+			
+			echo $statement->getCompiledquery() . "\n";
 		
-			self::$cachedStatements[$query] = $statement;
+			self::$cachedStatements[$shortq] = $statement->prepare();
 		}
 		
-		return self::$cachedStatements[$query];
+		return self::$cachedStatements[$shortq];
 	}
 
 }

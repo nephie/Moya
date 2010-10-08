@@ -24,7 +24,7 @@ class where {
 				break;
 		}
 		
-		$lexer->query->addCondition($condition);
+		$lexer->query->addPart(array('WHERE' => $condition));
 	}
 	
 	

@@ -6,11 +6,11 @@ use Moya\core\util\inflector;
 
 class select {
 	public function parse(lexer $lexer){
-		
-		$lexer->query->setType('SELECT');
 				
 		$model = inflector::getModelfromcontext($lexer->getCurrentToken());
 		$lexer->query->setModel(new $model());
+		$lexer->query->addPart(array('SELECT' => 'SELECT'));
+		
 		$lexer->moveNext();
 	}
 }

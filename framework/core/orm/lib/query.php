@@ -5,8 +5,11 @@ use Moya\core\lib\getandsetLib;
 
 class query extends getandsetLib {
 	
-	protected $type;
 	protected $model;
-	protected $condition;
+	protected $part;
+	
+	public function addPart($array){
+		$this->part[] = $array;
+	}
 }
 ?>

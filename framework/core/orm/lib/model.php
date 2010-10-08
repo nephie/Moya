@@ -96,7 +96,7 @@ class model extends getandsetLib {
      * This function will return a object filled with the data contained in the array given as parameter
      *
      */
-	protected  function fillObject($data){
+	public function fillObject($data){
 		$objecttype = inflector::getObjectfromcontext($this);
 		$object = new $objecttype();
 
