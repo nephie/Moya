@@ -1,5 +1,7 @@
 <?php
 namespace Moya;
+use Moya\core\orm\drivers\sqlsrv;
+
 use Moya\plugins\test\object\pageObject;
 use Moya\core\orm\orm;
 
@@ -30,24 +32,17 @@ class Moya {
 	 */
 	public function run(){
 		echo '<pre>';
+				
+//		$stm = orm::query('SELECT test\page WHERE [id] = {:id} OR ([title] LIKE {:title} AND [name] LIKE {:name})');
+//		print_r($stm);
+//		$pages = $stm->execute(array(':id' => '1',':title' => '%t%',':name' => '%'))->fetchAll();
+//		print_r($pages);
+
+		$stm = orm::query('SELECT test\page WHERE [id] IN (SELECT test\page WHERE [title] LIKE {:title})');
 		
-		$statement = orm::query('SELECT test\page WHERE [id] = {:id}');
-		
-		$statement->setParameter(':id', 1);	
-		$statement->execute();	
-		$pages = $statement->fetchAll();
+		$pages = $stm->execute(array(':title' => '%test%'))->fetchAll();
 		print_r($pages);
-		
-		$statement->setParameter(':id', 2)->execute();
-		$pages = $statement->fetch();
-		print_r($pages);
-		
-		$stm = orm::query('SELECT test\page WHERE [id] = {:id}');
-		$page = $stm->execute(array(':id' => '1'))->fetch();
-		print_r($page);
-		
-		$pages = $stm->execute(array(':id' => '1'))->fetchAll();
-		print_r($pages);
+
 		
 		/*
 		//$statement = orm::prepare('SELECT test\page WHERE ( [test\page.id] = :id OR [name] LIKE :name) AND [title] LIKE :title');

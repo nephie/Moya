@@ -7,24 +7,62 @@ use Moya\core\orm\lib\lexer;
 
 class where {
 	
-	 protected $nestLevel = 0;
 	
+	/*
+	 
+	 array('type' => 'AND',
+ 			'conditions' => array(
+ 				array('field','mode','value'),
+ 				array('field','mode','value'),
+ 				array( 'type' => 'OR',
+ 					   'conditions' => array(
+ 					   		array('field','mode','value'),
+ 					   		array('field','mode','value')
+ 					   ),
+ 				array( 'type' => 'OR',
+ 					   'conditions' => array(
+ 					   		array('field','mode','value'),
+ 					   		array('field','mode','value')
+ 					   )
+ 			)
+	 				
+	 
+	 */
 	public function parse(lexer $lexer){
 		
-		switch(strtolower($lexer->getCurrentToken())){
-			case '[': $condition = $this->parseCondition($lexer);
-				break;
-			case '(': $this->nestlevel++; $lexer->moveNext();
-				break;
-			case ')': $this->nestLevel--; $lexer->moveNext();
-				break;
-			case 'and':
-				break;
-			case 'or':
-				break;
-		}
+		$condition = $this->recursiveParse($lexer);
 		
 		$lexer->query->addPart(array('WHERE' => $condition));
+	}
+	
+	protected function recursiveParse(lexer $lexer){
+		$done = false;
+		
+		$level = array('type' => 'AND', 'conditions' => array());
+		
+		while(!$done){
+			$token = strtolower($lexer->getCurrentToken());
+			switch($token){
+				case '[': $level['conditions'][] = $this->parseCondition($lexer);
+					break;
+				case 'and': $level['type'] = 'AND'; $lexer->moveNext();
+					break;
+				case 'or': $level['type'] = 'OR'; $lexer-> moveNext();
+					break;
+					
+				case '(': $lexer->moveNext(); 
+						$level['conditions'][] = $this->recursiveParse($lexer);
+					break;
+					
+				case ')': $lexer->moveNext();
+					$done = true;
+					break;
+				default : $done = true; 
+					break;
+			}
+		}
+		
+		return $level;
 	}
 	
 	
@@ -37,9 +75,37 @@ class where {
 		
 		switch($lexer->getCurrentToken()){
 			case '{': $value = $this->parseParameter($lexer);
+				break;
+			case '(': $value = $this->parseSubselect($lexer);
+				break;
 		}
 		
 		return array('field' => $fieldarray ,'mode' => $mode, 'value' => $value);
+	}
+	
+	protected function parseSubselect(lexer $lexer){
+		$subtokens = array();
+		$nested = 0;
+		
+		$lexer->movenext();
+		
+		while($lexer->getCurrentToken() != ')' && $nested == 0){
+			$subtokens[] = $lexer->getCurrentToken();
+			
+			$lexer->moveNext();
+			
+			if($lexer->getCurrentToken() == '('){
+				$nested++;
+			}
+			elseif($lexer->getCurrentToken() == ')'){
+				$nested--;
+			}
+		}
+		
+		$sublexer = new lexer();
+		$subquery = $sublexer->parse($subtokens);
+	//	$compiledSubquery = // TODO complete this 
+		print_r($subquery);
 	}
 	
 	protected function parseParameter(lexer $lexer){
@@ -47,8 +113,14 @@ class where {
 		
 		$param = $lexer->getCurrentToken();
 		
+		while(!$lexer->isNextToken('}')){
+			$lexer->moveNext();
+			$param .= $lexer->getCurrentToken();
+		}
+				
 		$lexer->moveNext();
 		$lexer->moveNext();
+	
 		
 		return $param;
 	}

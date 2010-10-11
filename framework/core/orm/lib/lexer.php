@@ -20,7 +20,12 @@ class lexer {
     
     public function parse($input){
     	$this->input = $input;
-    	$this->tokens = $this->tokenize($input);    	
+    	if(is_array($this->input)){
+    		$this->tokens = $this->input;
+    	}
+    	else {
+    		$this->tokens = $this->tokenize($input);
+    	}    	
     	$this->query = new query();
     	
     	$this->walkTokens();
