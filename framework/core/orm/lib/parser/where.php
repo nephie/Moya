@@ -1,6 +1,8 @@
 <?php
 namespace Moya\core\orm\lib\parser;
 
+use Moya\core\util\config;
+
 use Moya\core\util\inflector;
 
 use Moya\core\orm\lib\lexer;
@@ -76,7 +78,7 @@ class where {
 		switch($lexer->getCurrentToken()){
 			case '{': $value = $this->parseParameter($lexer);
 				break;
-			case '(': $value = $this->parseSubselect($lexer);
+			case '(': $value = ' (' . $this->parseSubselect($lexer) . ') ';
 				break;
 		}
 		
@@ -104,8 +106,15 @@ class where {
 		
 		$sublexer = new lexer();
 		$subquery = $sublexer->parse($subtokens);
-	//	$compiledSubquery = // TODO complete this 
-		print_r($subquery);
+		
+		$datastore = $subquery->getModel()->getDatastore();
+		$driverclass = '\\Moya\\core\\orm\\drivers\\' . config::get('datastore', $datastore . '/driver');	
+
+		$driver = $driverclass::getInstance($datastore);
+		
+		$compiledSubquery = $driver->compileQuery($subquery);
+		//TODO subselects over different datastores;
+		return $compiledSubquery;
 	}
 	
 	protected function parseParameter(lexer $lexer){

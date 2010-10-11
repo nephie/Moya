@@ -14,9 +14,14 @@ class select {
 		
 		$querystr .= 'SELECT ';
 		
-		$fields = $model->getDbfields();		
-		$fieldnames = array_keys($fields);
-		$querystr .= $this->leftcolident . implode($this->rightcolident . ', ' . $this->leftcolident,$fieldnames) . $this->rightcolident . ' ';
+		if($part == 'OBJECT'){
+			$fields = $model->getDbfields();		
+			$fieldnames = array_keys($fields);
+			$querystr .= $this->leftcolident . implode($this->rightcolident . ', ' . $this->leftcolident,$fieldnames) . $this->rightcolident . ' ';
+		}
+		else {
+			$querystr .= $this->leftcolident . $query->getModel()->getDbfieldfor($part) . $this->rightcolident . ' ';
+		}
 		
 		$querystr .= 'FROM ';
 		$querystr .= $this->leftcolident . $model->getTable() . $this->rightcolident . ' ';

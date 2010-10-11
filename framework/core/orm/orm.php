@@ -21,7 +21,7 @@ class orm {
 			$statement->setQuery($parsedQuery);
 			
 			$datastore = $parsedQuery->getModel()->getDatastore();
-			$driverclass = __NAMESPACE__ . '\\drivers\\' . config::get('datastore', $datastore . '/driver');	
+			$driverclass = '\\Moya\\core\\orm\\drivers\\' . config::get('datastore', $datastore . '/driver');	
 
 			$driver = $driverclass::getInstance($datastore);
 			$statement->setDriver($driver);

@@ -38,9 +38,9 @@ class Moya {
 //		$pages = $stm->execute(array(':id' => '1',':title' => '%t%',':name' => '%'))->fetchAll();
 //		print_r($pages);
 
-		$stm = orm::query('SELECT test\page WHERE [id] IN (SELECT test\page WHERE [title] LIKE {:title})');
+		$stm = orm::query('SELECT test\page.name WHERE [title] IN (SELECT test\page.title WHERE [id] = {:id} OR ([title] LIKE {:title} AND [name] LIKE {:name}))');
 		
-		$pages = $stm->execute(array(':title' => '%test%'))->fetchAll();
+		$pages = $stm->execute(array(':title' => '%t%',':name' => '%',':id' => '2'))->fetchAll();
 		print_r($pages);
 
 		

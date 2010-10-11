@@ -9,7 +9,17 @@ class select {
 				
 		$model = inflector::getModelfromcontext($lexer->getCurrentToken());
 		$lexer->query->setModel(new $model());
-		$lexer->query->addPart(array('SELECT' => 'SELECT'));
+		
+		if($lexer->isNextToken('.')){
+			$lexer->moveNext();
+			$lexer->moveNext();
+			$field = $lexer->getCurrentToken();
+		}
+		else {
+			$field = 'OBJECT';
+		}
+		
+		$lexer->query->addPart(array('SELECT' => $field));
 		
 		$lexer->moveNext();
 	}

@@ -10,7 +10,7 @@ namespace Moya\core\orm\drivers;
 use Moya\core\util\config;
 
 class mysql extends pdo {
-	
+		
 	public function getInstance($datastore){
 		if(! self::$instance[$datastore] instanceof mysql){
 			self::$instance[$datastore] = new mysql($datastore); 
